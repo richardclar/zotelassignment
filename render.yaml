@@ -1,0 +1,22 @@
+database:
+  name: zotel
+  plan: free
+  databaseName: zotel
+  ipAllowList: []
+
+services:
+  - name: zotel-web
+    env: php
+    region: singapore
+    plan: free
+    buildCommand: |
+      composer install --no-dev --optimize-autoloader
+      php artisan key:generate --force
+      php artisan migrate --force
+      php artisan db:seed --force
+    startCommand: php artisan serve --port 10000
+    healthCheckPath: /
+    disks:
+      - name: public
+        mountPath: /app/public
+        sizeGB: 1
