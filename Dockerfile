@@ -24,20 +24,30 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /app
 
-# Copy composer files first
-COPY composer.json composer.lock* ./
-
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction || composer install --no-dev --optimize-autoloader
-
-# Copy rest of application
+# Copy all files
 COPY . .
 
-# Create .env file
-RUN cp .env.example .env
+# Create .env manually
+RUN echo "APP_NAME=Zotel" >> .env && \
+    echo "APP_ENV=production" >> .env && \
+    echo "APP_KEY=" >> .env && \
+    echo "APP_DEBUG=false" >> .env && \
+    echo "APP_URL=https://zotel-assignment.onrender.com" >> .env && \
+    echo "LOG_CHANNEL=stack" >> .env && \
+    echo "LOG_LEVEL=debug" >> .env && \
+    echo "DB_CONNECTION=sqlite" >> .env && \
+    echo "DB_DATABASE=/app/database/database.sqlite" >> .env
+
+# Install dependencies
+RUN composer install --no-dev --optimize-autoloader
 
 # Generate application key
 RUN php artisan key:generate --force
+
+# Create SQLite database and run migrations
+RUN touch /app/database/database.sqlite && \
+    php artisan migrate --force && \
+    php artisan db:seed --force
 
 # Set permissions
 RUN chmod -R 775 storage bootstrap/cache
