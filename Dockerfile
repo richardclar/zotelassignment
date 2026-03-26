@@ -24,11 +24,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /app
 
-# Copy entire application first
+# Copy entire application
 COPY . .
 
-# Verify artisan exists
-RUN ls -la artisan
+# Create public directory if not exists
+RUN mkdir -p /app/public
 
 # Create .env manually
 RUN echo "APP_NAME=Zotel" >> .env && \
@@ -54,7 +54,7 @@ RUN mkdir -p /app/database && \
     php artisan db:seed --force
 
 # Set permissions
-RUN chmod -R 775 storage bootstrap/cache
+RUN chmod -R 775 storage bootstrap/cache public
 
 # Expose port
 EXPOSE 10000
