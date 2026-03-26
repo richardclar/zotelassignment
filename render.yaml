@@ -5,7 +5,8 @@ database:
   ipAllowList: []
 
 services:
-  - name: zotel-web
+  - type: web
+    name: zotel-web
     env: php
     region: singapore
     plan: free
@@ -16,7 +17,7 @@ services:
       php artisan db:seed --force
     startCommand: php artisan serve --port 10000
     healthCheckPath: /
-    disks:
-      - name: public
-        mountPath: /app/public
-        sizeGB: 1
+    disk:
+      name: public
+      mountPath: /app/public
+      sizeGB: 1
