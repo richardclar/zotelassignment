@@ -27,7 +27,7 @@ class PricingSeeder extends Seeder
     public function run(): void
     {
         $startDate = Carbon::today();
-        $endDate = Carbon::today()->addDays(30);
+        $endDate = Carbon::today()->addDays(60);
 
         $roomTypes = RoomType::all();
 
