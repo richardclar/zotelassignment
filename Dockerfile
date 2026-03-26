@@ -10,9 +10,7 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     zip \
     unzip \
-    libzip-dev \
-    apache2 \
-    libapache2-mod-php
+    libzip-dev
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
