@@ -1,0 +1,19 @@
+services:
+  web:
+    build: .
+    ports:
+      - "10000:10000"
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - DB_CONNECTION=pgsql
+      - DB_HOST=another
+      - DB_PORT=5432
+      - DB_DATABASE=zotel
+      - DB_USERNAME=another
+      - DB_PASSWORD=
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:10000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
