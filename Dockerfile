@@ -27,8 +27,8 @@ WORKDIR /app
 # Copy application files
 COPY . .
 
-# Install dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Create .env file
+RUN cp .env.example .env || echo "APP_KEY=base64:dGVzdGtleXRlc3RrZXl0ZXN0a2V5dGVzdGtleXRlc3Q=" > .env
 
 # Generate application key
 RUN php artisan key:generate --force
