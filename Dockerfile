@@ -24,8 +24,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /app
 
-# Copy all files
+# Copy entire application first
 COPY . .
+
+# Verify artisan exists
+RUN ls -la artisan
 
 # Create .env manually
 RUN echo "APP_NAME=Zotel" >> .env && \
@@ -45,7 +48,8 @@ RUN composer install --no-dev --optimize-autoloader
 RUN php artisan key:generate --force
 
 # Create SQLite database and run migrations
-RUN touch /app/database/database.sqlite && \
+RUN mkdir -p /app/database && \
+    touch /app/database/database.sqlite && \
     php artisan migrate --force && \
     php artisan db:seed --force
 
