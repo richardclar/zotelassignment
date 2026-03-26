@@ -10,7 +10,9 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     zip \
     unzip \
-    libzip-dev
+    libzip-dev \
+    apache2 \
+    libapache2-mod-php
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -27,8 +29,8 @@ WORKDIR /app
 # Copy entire application
 COPY . .
 
-# Create public directory if not exists
-RUN mkdir -p /app/public
+# Create all directories
+RUN mkdir -p /app/public /app/storage/framework/{sessions,views,cache} /app/storage/logs /app/bootstrap/cache
 
 # Create .env manually
 RUN echo "APP_NAME=Zotel" >> .env && \
@@ -54,7 +56,7 @@ RUN mkdir -p /app/database && \
     php artisan db:seed --force
 
 # Set permissions
-RUN chmod -R 775 storage bootstrap/cache public
+RUN chmod -R 775 /app/storage /app/bootstrap/cache /app/public
 
 # Expose port
 EXPOSE 10000
