@@ -1,7 +1,6 @@
 services:
-  - name: zotel-web
+  - name: zotel-assignment
     dockerfilePath: ./Dockerfile
-    name: zotel-assignment
     region: singapore
     plan: free
     healthCheckPath: /
