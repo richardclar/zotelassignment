@@ -14,7 +14,7 @@ class InventorySeeder extends Seeder
     public function run(): void
     {
         $startDate = Carbon::today();
-        $endDate = Carbon::today()->addDays(30);
+        $endDate = Carbon::today()->addDays(60);
 
         $roomTypes = RoomType::all();
 
@@ -30,15 +30,15 @@ class InventorySeeder extends Seeder
 
         while ($currentDate->lte($endDate)) {
             $bookedRooms = $this->calculateRandomBookedRooms($currentDate, $totalRooms);
-            $blockedRooms = mt_rand(0, 1);
-            $isClosed = $bookedRooms >= $totalRooms && mt_rand(0, 10) > 7;
+            $blockedRooms = 0;
+            $isClosed = false;
 
             Inventory::create([
                 'room_type_id' => $roomType->id,
                 'date' => $currentDate->format('Y-m-d'),
                 'total_rooms' => $totalRooms,
-                'booked_rooms' => $isClosed ? $totalRooms : $bookedRooms,
-                'blocked_rooms' => $isClosed ? 0 : $blockedRooms,
+                'booked_rooms' => $bookedRooms,
+                'blocked_rooms' => $blockedRooms,
                 'is_closed' => $isClosed,
             ]);
 
@@ -48,23 +48,10 @@ class InventorySeeder extends Seeder
 
     private function calculateRandomBookedRooms(Carbon $date, int $totalRooms): int
     {
-        $dayOfWeek = $date->dayOfWeek;
-
-        $baseChance = match ($dayOfWeek) {
-            Carbon::MONDAY, Carbon::TUESDAY, Carbon::WEDNESDAY, Carbon::THURSDAY => 0.3,
-            Carbon::FRIDAY => 0.5,
-            Carbon::SATURDAY, Carbon::SUNDAY => 0.7,
-            default => 0.3,
-        };
+        $baseChance = 0.15;
 
         $randomFactor = mt_rand(0, 100) / 100;
-        $isHighDemand = mt_rand(0, 10) > 8;
-
-        if ($isHighDemand) {
-            $baseChance += 0.2;
-        }
-
-        $bookedRatio = min(1, max(0, $baseChance + ($randomFactor - 0.5) * 0.3));
+        $bookedRatio = min(0.4, $baseChance + ($randomFactor - 0.5) * 0.1);
 
         return (int) round($totalRooms * $bookedRatio);
     }
