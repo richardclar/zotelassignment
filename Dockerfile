@@ -24,11 +24,17 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /app
 
-# Copy application files
+# Copy composer files first
+COPY composer.json composer.lock* ./
+
+# Install dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction || composer install --no-dev --optimize-autoloader
+
+# Copy rest of application
 COPY . .
 
 # Create .env file
-RUN cp .env.example .env || echo "APP_KEY=base64:dGVzdGtleXRlc3RrZXl0ZXN0a2V5dGVzdGtleXRlc3Q=" > .env
+RUN cp .env.example .env
 
 # Generate application key
 RUN php artisan key:generate --force
