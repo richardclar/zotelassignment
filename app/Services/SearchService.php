@@ -126,7 +126,8 @@ class SearchService implements SearchServiceInterface
         $endDate = $request->checkOutDate->copy()->subDay()->format('Y-m-d');
 
         return Inventory::where('room_type_id', $roomType->id)
-            ->whereBetween('date', [$startDate, $endDate])
+            ->whereDate('date', '>=', $startDate)
+            ->whereDate('date', '<=', $endDate)
             ->get()
             ->keyBy(fn ($item) => $item->date->format('Y-m-d'));
     }
