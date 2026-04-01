@@ -16,9 +16,10 @@ class DiscountService implements DiscountServiceInterface
     public function calculateDiscounts(
         SearchRequestDTO $request,
         float $subtotal,
-        int $roomTypeId
+        int $roomTypeId,
+        ?int $ratePlanTypeId = null
     ): array {
-        $applicableDiscounts = $this->getApplicableDiscounts($request, $roomTypeId);
+        $applicableDiscounts = $this->getApplicableDiscounts($request, $roomTypeId, $ratePlanTypeId);
         $appliedDiscounts = [];
         $totalDiscount = 0.0;
 
@@ -36,7 +37,7 @@ class DiscountService implements DiscountServiceInterface
                 );
                 $totalDiscount += $amount;
 
-                if (!$discountType->is_stackable) {
+                if (! $discountType->is_stackable) {
                     break;
                 }
             }
@@ -48,7 +49,7 @@ class DiscountService implements DiscountServiceInterface
         ];
     }
 
-    public function getApplicableDiscounts(SearchRequestDTO $request, int $roomTypeId): Collection
+    public function getApplicableDiscounts(SearchRequestDTO $request, int $roomTypeId, ?int $ratePlanTypeId = null): Collection
     {
         $nights = $request->getNights();
         $daysBeforeCheckin = $request->getDaysBeforeCheckin();
@@ -58,6 +59,10 @@ class DiscountService implements DiscountServiceInterface
             ->where(function ($query) use ($roomTypeId) {
                 $query->whereNull('room_type_id')
                     ->orWhere('room_type_id', $roomTypeId);
+            })
+            ->where(function ($query) use ($ratePlanTypeId) {
+                $query->whereNull('rate_plan_type_id')
+                    ->orWhere('rate_plan_type_id', $ratePlanTypeId);
             })
             ->where(function ($query) use ($nights) {
                 $query->where('min_nights', '<=', $nights)
@@ -83,7 +88,7 @@ class DiscountService implements DiscountServiceInterface
                 $query->whereNull('valid_to')
                     ->orWhere('valid_to', '>=', $request->checkInDate);
             })
-            ->with('discountType')
+            ->with(['discountType', 'ratePlanType'])
             ->get();
     }
 

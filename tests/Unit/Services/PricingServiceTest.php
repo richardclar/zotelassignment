@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Unit\Services;
 
 use App\DTO\SearchRequestDTO;
-use App\Enums\MealPlanType;
 use App\Models\MealPlan;
 use App\Services\DiscountService;
 use App\Services\PricingService;
@@ -37,7 +36,7 @@ class PricingServiceTest extends TestCase
             'is_active' => true,
         ]);
 
-        $discountService = new DiscountService();
+        $discountService = new DiscountService;
         $this->pricingService = new PricingService($discountService);
     }
 
@@ -47,14 +46,13 @@ class PricingServiceTest extends TestCase
             checkInDate: Carbon::parse('2026-04-01'),
             checkOutDate: Carbon::parse('2026-04-03'),
             adults: 2,
-            mealPlan: MealPlanType::ROOM_ONLY
         );
 
         $dailyPrices = [150.00, 150.00];
 
         $result = $this->pricingService->calculatePrice($request, 1, $dailyPrices);
 
-        $this->assertEquals(300.00, $result->basePrice);
+        $this->assertEquals(300.00, $result->baseRoomPrice);
         $this->assertEquals(300.00, $result->subtotal);
         $this->assertEquals(2, $result->nights);
     }
@@ -65,15 +63,21 @@ class PricingServiceTest extends TestCase
             checkInDate: Carbon::parse('2026-04-01'),
             checkOutDate: Carbon::parse('2026-04-03'),
             adults: 2,
-            mealPlan: MealPlanType::BREAKFAST
         );
 
         $dailyPrices = [150.00, 150.00];
+        $mealPlanPricePerPersonPerNight = 70.00;
 
-        $result = $this->pricingService->calculatePrice($request, 1, $dailyPrices);
+        $result = $this->pricingService->calculatePrice(
+            $request,
+            1,
+            $dailyPrices,
+            null,
+            $mealPlanPricePerPersonPerNight
+        );
 
-        $this->assertEquals(140.00, $result->mealPrice);
-        $this->assertEquals(440.00, $result->subtotal);
+        $this->assertEquals(280.00, $result->mealPlanPrice);
+        $this->assertEquals(580.00, $result->subtotal);
     }
 
     public function test_calculates_price_per_night(): void
@@ -82,7 +86,6 @@ class PricingServiceTest extends TestCase
             checkInDate: Carbon::parse('2026-04-01'),
             checkOutDate: Carbon::parse('2026-04-04'),
             adults: 2,
-            mealPlan: MealPlanType::ROOM_ONLY
         );
 
         $dailyPrices = [100.00, 100.00, 100.00];

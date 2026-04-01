@@ -31,7 +31,7 @@
             @if($availableCount > 0)
                 <span class="bg-green-100 text-green-800 text-sm font-medium px-3 py-1.5 rounded-full flex items-center gap-1.5">
                     <i class="fas fa-check-circle"></i>
-                    {{ $availableCount }} room{{ $availableCount > 1 ? 's' : '' }} available
+                    {{ $availableCount }} rate plan{{ $availableCount > 1 ? 's' : '' }} available
                 </span>
             @else
                 <span class="bg-red-100 text-red-800 text-sm font-medium px-3 py-1.5 rounded-full flex items-center gap-1.5">

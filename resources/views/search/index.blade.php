@@ -73,7 +73,7 @@
             <div class="mt-6 mb-4">
                 <h2 class="text-xl font-bold text-gray-900">
                     @if($results->isNotEmpty())
-                        Available Rooms ({{ $results->count() }})
+                        {{ $results->count() }} Room Type{{ $results->count() > 1 ? 's' : '' }} Available
                     @else
                         No Rooms Available
                     @endif
@@ -97,10 +97,8 @@
                             :roomTypeId="$result->roomTypeId"
                             :roomTypeName="$result->roomTypeName"
                             :roomTypeSlug="$result->roomTypeSlug"
-                            :available="$result->available"
-                            :availableRooms="$result->availableRooms"
-                            :mealPlan="$result->mealPlan"
-                            :priceBreakdown="$result->priceBreakdown?->toArray()"
+                            :maxOccupancy="$result->maxOccupancy"
+                            :ratePlans="$result->ratePlans"
                             :nights="$meta['nights']"
                         />
                     @endforeach
@@ -108,7 +106,7 @@
             @endif
 
             {{-- Search Tips --}}
-            @if($results->where('available', true)->count() < $results->count())
+            @if($results->filter(fn($r) => $r->hasAvailableRatePlans())->count() < $results->count())
                 <div class="mt-8 bg-blue-50 rounded-2xl p-6 border border-blue-100">
                     <h3 class="font-semibold text-blue-900 mb-3 flex items-center gap-2">
                         <i class="fas fa-lightbulb text-blue-500"></i>

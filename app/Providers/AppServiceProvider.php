@@ -19,7 +19,5 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(SearchServiceInterface::class, SearchService::class);
     }
 
-    public function boot(): void
-    {
-    }
+    public function boot(): void {}
 }

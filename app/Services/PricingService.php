@@ -8,28 +8,35 @@ use App\DTO\PriceBreakdownDTO;
 use App\DTO\SearchRequestDTO;
 use App\Interfaces\DiscountServiceInterface;
 use App\Interfaces\PricingServiceInterface;
-use App\Models\MealPlan;
+use App\Models\RatePlan;
 
 class PricingService implements PricingServiceInterface
 {
     public function __construct(
         private readonly DiscountServiceInterface $discountService
-    ) {
-    }
+    ) {}
 
     public function calculatePrice(
         SearchRequestDTO $request,
         int $roomTypeId,
-        array $dailyPrices
+        array $dailyPrices,
+        ?RatePlan $ratePlan = null,
+        float $mealPlanPricePerPersonPerNight = 0
     ): PriceBreakdownDTO {
         $nights = $request->getNights();
         $adults = $request->adults;
 
-        $basePrice = array_sum($dailyPrices);
-        $mealPrice = $this->calculateMealPlanPrice($request, $this->getMealPlanPricePerPerson($request));
-        $subtotal = $basePrice + $mealPrice;
+        $baseRoomPrice = array_sum($dailyPrices);
+        $mealPlanPrice = $mealPlanPricePerPersonPerNight * $adults * $nights;
+        $subtotal = $baseRoomPrice + $mealPlanPrice;
 
-        $discountResult = $this->discountService->calculateDiscounts($request, $subtotal, $roomTypeId);
+        $ratePlanTypeId = $ratePlan?->ratePlanType?->id;
+        $discountResult = $this->discountService->calculateDiscounts(
+            $request,
+            $subtotal,
+            $roomTypeId,
+            $ratePlanTypeId
+        );
         $totalDiscount = $discountResult['total_discount'];
         $appliedDiscounts = $discountResult['discounts'];
 
@@ -37,8 +44,8 @@ class PricingService implements PricingServiceInterface
         $pricePerNight = $nights > 0 ? $finalPrice / $nights : 0;
 
         return new PriceBreakdownDTO(
-            basePrice: $basePrice,
-            mealPrice: $mealPrice,
+            baseRoomPrice: $baseRoomPrice,
+            mealPlanPrice: $mealPlanPrice,
             subtotal: $subtotal,
             discount: $totalDiscount,
             finalPrice: $finalPrice,
@@ -53,12 +60,5 @@ class PricingService implements PricingServiceInterface
         float $pricePerPersonPerNight
     ): float {
         return $pricePerPersonPerNight * $request->adults * $request->getNights();
-    }
-
-    private function getMealPlanPricePerPerson(SearchRequestDTO $request): float
-    {
-        $mealPlan = MealPlan::where('slug', $request->mealPlan->value)->first();
-
-        return (float) ($mealPlan?->price_per_person_per_night ?? 0);
     }
 }

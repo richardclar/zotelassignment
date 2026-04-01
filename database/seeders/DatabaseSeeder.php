@@ -13,7 +13,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PropertySeeder::class,
             RoomTypeSeeder::class,
-            MealPlanSeeder::class,
+            RatePlanTypeSeeder::class,
+            MealPlanComponentSeeder::class,
+            RatePlanSeeder::class,
             PricingSeeder::class,
             InventorySeeder::class,
             DiscountSeeder::class,

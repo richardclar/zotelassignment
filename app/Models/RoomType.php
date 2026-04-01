@@ -54,4 +54,9 @@ class RoomType extends Model
     {
         return $this->hasMany(RatePlan::class);
     }
+
+    public function activeRatePlans(): HasMany
+    {
+        return $this->hasMany(RatePlan::class)->where('is_active', true)->with('ratePlanType', 'mealPlanComponents');
+    }
 }

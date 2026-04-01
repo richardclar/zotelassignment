@@ -11,6 +11,7 @@ class PricingRule extends Model
 {
     protected $fillable = [
         'room_type_id',
+        'rate_plan_id',
         'date',
         'occupancy',
         'base_price',
@@ -27,5 +28,10 @@ class PricingRule extends Model
     public function roomType(): BelongsTo
     {
         return $this->belongsTo(RoomType::class);
+    }
+
+    public function ratePlan(): BelongsTo
+    {
+        return $this->belongsTo(RatePlan::class);
     }
 }

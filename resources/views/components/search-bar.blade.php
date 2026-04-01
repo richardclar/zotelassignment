@@ -2,13 +2,12 @@
     'defaultCheckIn',
     'defaultCheckOut',
     'selectedAdults' => 2,
-    'selectedMealPlan' => 'room_only',
     'minDate'
 ])
 
 <form action="{{ route('search.submit') }}" method="GET" 
     class="bg-white rounded-2xl shadow-lg p-6">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
                 <i class="fas fa-calendar-check text-blue-500 mr-1"></i> Check-in
@@ -39,20 +38,7 @@
                 <option value="1" {{ $selectedAdults == 1 ? 'selected' : '' }}>1 Adult</option>
                 <option value="2" {{ $selectedAdults == 2 ? 'selected' : '' }}>2 Adults</option>
                 <option value="3" {{ $selectedAdults == 3 ? 'selected' : '' }}>3 Adults</option>
-            </select>
-        </div>
-
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-                <i class="fas fa-utensils text-blue-500 mr-1"></i> Meal Plan
-            </label>
-            <select name="meal_plan" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-gray-700 bg-white">
-                <option value="room_only" {{ $selectedMealPlan == 'room_only' ? 'selected' : '' }}>
-                    Room Only
-                </option>
-                <option value="breakfast" {{ $selectedMealPlan == 'breakfast' ? 'selected' : '' }}>
-                    Bed & Breakfast (+₹2,800/person)
-                </option>
+                <option value="4" {{ $selectedAdults == 4 ? 'selected' : '' }}>4 Adults</option>
             </select>
         </div>
 

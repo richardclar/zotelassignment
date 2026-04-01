@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Tests\Unit\Services;
 
 use App\DTO\SearchRequestDTO;
-use App\Enums\MealPlanType;
-use App\Services\DiscountService;
-use App\Models\DiscountType;
 use App\Models\DiscountRule;
+use App\Models\DiscountType;
+use App\Services\DiscountService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -22,7 +21,7 @@ class DiscountServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->discountService = new DiscountService();
+        $this->discountService = new DiscountService;
     }
 
     public function test_calculates_long_stay_discount_for_3_nights(): void
@@ -46,7 +45,6 @@ class DiscountServiceTest extends TestCase
             checkInDate: Carbon::parse('2026-04-01'),
             checkOutDate: Carbon::parse('2026-04-04'),
             adults: 2,
-            mealPlan: MealPlanType::ROOM_ONLY
         );
 
         $result = $this->discountService->calculateDiscounts($request, 1000.00, 1);
@@ -80,7 +78,6 @@ class DiscountServiceTest extends TestCase
             checkInDate: $checkInDate,
             checkOutDate: $checkInDate->copy()->addDay(),
             adults: 2,
-            mealPlan: MealPlanType::ROOM_ONLY
         );
 
         $result = $this->discountService->calculateDiscounts($request, 500.00, 1);
@@ -110,7 +107,6 @@ class DiscountServiceTest extends TestCase
             checkInDate: Carbon::parse('2026-04-01'),
             checkOutDate: Carbon::parse('2026-04-03'),
             adults: 2,
-            mealPlan: MealPlanType::ROOM_ONLY
         );
 
         $result = $this->discountService->calculateDiscounts($request, 500.00, 1);

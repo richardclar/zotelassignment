@@ -14,8 +14,7 @@ class DiscountDTO implements Arrayable
         public readonly string $type,
         public readonly float $value,
         public readonly float $amount,
-    ) {
-    }
+    ) {}
 
     public function toArray(): array
     {

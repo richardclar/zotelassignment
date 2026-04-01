@@ -29,7 +29,7 @@ class RoomTypeSeeder extends Seeder
             'name' => 'Deluxe Room',
             'slug' => 'deluxe',
             'description' => 'Spacious room with premium amenities and beautiful views.',
-            'max_occupancy' => 3,
+            'max_occupancy' => 4,
             'total_rooms' => 5,
             'amenities' => ['wifi', 'tv', 'air_conditioning', 'minibar', 'balcony', 'jacuzzi'],
             'is_active' => true,

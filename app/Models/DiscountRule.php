@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Carbon\Carbon;
 
 class DiscountRule extends Model
 {
     protected $fillable = [
         'discount_type_id',
+        'rate_plan_type_id',
         'room_type_id',
         'valid_from',
         'valid_to',
@@ -37,6 +38,11 @@ class DiscountRule extends Model
         return $this->belongsTo(DiscountType::class);
     }
 
+    public function ratePlanType(): BelongsTo
+    {
+        return $this->belongsTo(RatePlanType::class);
+    }
+
     public function roomType(): BelongsTo
     {
         return $this->belongsTo(RoomType::class);
@@ -44,7 +50,7 @@ class DiscountRule extends Model
 
     public function isValidForDateRange(Carbon $checkIn, Carbon $checkOut, int $nights): bool
     {
-        if (!$this->is_active) {
+        if (! $this->is_active) {
             return false;
         }
 
