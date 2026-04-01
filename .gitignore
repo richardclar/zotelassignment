@@ -1,0 +1,47 @@
+# Laravel
+/vendor/
+/node_modules/
+/.env
+/.env.backup
+/.env.production
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+/.idea
+/.vscode
+*.swp
+*.swo
+
+# Database
+*.sqlite
+*.sqlite3
+
+# Storage
+/storage/*.key
+/storage/logs/*
+
+# Compiled
+/public/hot
+/public/storage
+/public/build
+
+# Cache
+/bootstrap/cache/*
+!/bootstrap/cache/.gitkeep
+/bootstrap/cache/*.php
+
+# Logs
+*.log
+*.log.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project Specific
+*.md.bak
+TECHNICAL_DOCUMENTATION.md
+PHASE2_EMAIL_RESPONSE.md
+PROJECT_THOUGHT_PROCESS.md
