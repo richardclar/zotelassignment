@@ -18,14 +18,14 @@ class SearchResultDTO implements Arrayable
 
     public function hasAvailableRatePlans(): bool
     {
-        return collect($this->ratePlans)->contains(fn ($rp) => $rp->available);
+        return collect($this->ratePlans)->contains(fn ($rp) => is_array($rp) ? ($rp['available'] ?? false) : $rp->available);
     }
 
     public function getLowestPrice(): ?float
     {
         $available = collect($this->ratePlans)
-            ->where('available', true)
-            ->map(fn ($rp) => $rp->priceBreakdown?->finalPrice);
+            ->filter(fn ($rp) => is_array($rp) ? ($rp['available'] ?? false) : $rp->available)
+            ->map(fn ($rp) => is_array($rp) ? ($rp['price_breakdown']['final_price'] ?? null) : $rp->priceBreakdown?->finalPrice);
 
         return $available->filter()->min();
     }
